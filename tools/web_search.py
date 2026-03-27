@@ -1,6 +1,10 @@
-import requests
-from bs4 import BeautifulSoup
+import os
+from tavily import TavilyClient
 from smolagents import tool
+from dotenv import load_dotenv
+load_dotenv()
+
+TAVILY_API_KEY = os.getenv("TAVILY_TOKEN")
 
 @tool
 def web_search(query: str) -> str:
@@ -18,19 +22,12 @@ def web_search(query: str) -> str:
         query: The specific search term or question to look up
     """
     try:
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
-        }
-        response = requests.get(f"https://www.google.com/search?q={query}", headers=headers, timeout=10, )
-        response.raise_for_status()
-        soup = BeautifulSoup(response.content, 'html.parser')
-        for script in soup(['script', 'style', 'header', 'footer', 'nav', 'aside']):
-            script.decompose()
-        text = soup.get_text()
-        lines = (line.strip() for line in text.splitlines())
-        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-        text = '\n'.join(chunk for chunk in chunks if chunk)
-        return text
+        tavily = TavilyClient(api_key=TAVILY_API_KEY)
+        response = tavily.search(query=query)
+        formatted_response = "" 
+        for result in response["results"][:5]:
+            formatted_response += f"Title: {result['title']}, URL: {result['url']}, Content: {result['content']}\n"
+        return formatted_response
     except Exception as e:
         return f"Error: {e}"
 
