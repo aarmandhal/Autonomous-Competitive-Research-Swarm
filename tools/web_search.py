@@ -21,7 +21,7 @@ def web_search(query: str) -> str:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
         }
-        response = requests.get(f"https://www.google.com/search?q={query}", headers=headers, timeout=10)
+        response = requests.get(f"https://www.google.com/search?q={query}", headers=headers, timeout=10, )
         response.raise_for_status()
         soup = BeautifulSoup(response.content, 'html.parser')
         for script in soup(['script', 'style', 'header', 'footer', 'nav', 'aside']):
@@ -33,3 +33,6 @@ def web_search(query: str) -> str:
         return text
     except Exception as e:
         return f"Error: {e}"
+
+if __name__ == "__main__":
+    print(web_search("Latest News on AI"))
