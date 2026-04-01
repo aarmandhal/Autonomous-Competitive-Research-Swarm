@@ -4,3 +4,4 @@ requests
 rich
 tavily-python
 dot-env
+argparse
