@@ -3,7 +3,10 @@ from tools.web_search import web_search
 from smolagents import CodeAgent, LiteLLMModel
 
 llm = LiteLLMModel(model="ollama_chat/qwen3:8b")
-task_prompt = f"""
+
+
+def run_research_agent(topic: str, persona: str):
+    task_prompt = f"""
     TARGET TO RESEARCH: {topic}
 
     IMMEDIATE ACTIONS REQUIRED:
@@ -12,8 +15,8 @@ task_prompt = f"""
     3. Return ONLY the final structured output exactly as defined in your system prompt. Do not include conversational filler like 'Here is the report'.
     """
 
-def run_research_agent(topic: str, persona: str):
     prompt_path = f"prompts/{persona}.md"
+    
     with open(prompt_path, "r") as f:
         prompt_template = f.read()
 
