@@ -5,3 +5,4 @@ rich
 tavily-python
 dot-env
 argparse
+rich

@@ -1,5 +1,4 @@
 import argparse
-from agents.researcher import run_research_agent
 from agents.synthesizer import run_synthesizer_agent
 
 def main():
