@@ -1,5 +1,6 @@
 import argparse
-from rich import Console, Markdown
+from rich.console import Console
+from rich.markdown import Markdown
 from agents.synthesizer import run_synthesizer_agent
 
 def main():

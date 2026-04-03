@@ -2,7 +2,7 @@ from tools.text_scraper import scrape_text
 from tools.web_search import web_search
 from smolagents import CodeAgent, LiteLLMModel
 
-llm = LiteLLMModel(model="ollama_chat/qwen3:8b")
+llm = LiteLLMModel(model_id="ollama_chat/qwen3:8b")
 
 
 def run_research_agent(topic: str, persona: str):
@@ -23,7 +23,7 @@ def run_research_agent(topic: str, persona: str):
     agent = CodeAgent(
         model=llm,
         tools=[web_search, scrape_text],
-        system_prompt=prompt_template
+        instructions=prompt_template
     )
 
     result = agent.run(task_prompt)

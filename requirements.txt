@@ -1,8 +1,9 @@
-smolagents
+smolagents[litellm]
 beautifulsoup4
 requests
 rich
 tavily-python
-dot-env
+python-dotenv
 argparse
 rich
+litellm
