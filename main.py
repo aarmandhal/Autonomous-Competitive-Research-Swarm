@@ -1,7 +1,11 @@
 import argparse
+import asyncio
 from rich.console import Console
 from rich.markdown import Markdown
 from agents.synthesizer import run_synthesizer_agent
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def main():
     console = Console()
@@ -11,7 +15,8 @@ def main():
     args = parser.parse_args()
 
     topics = [t.strip() for t in args.topic.split(",")]
-    final_result = Markdown(run_synthesizer_agent(topics, args.persona))
+    raw_result = asyncio.run(run_synthesizer_agent(topics, args.persona))
+    final_result = Markdown(str(raw_result))
     console.print(final_result)
 
 if __name__ == "__main__":

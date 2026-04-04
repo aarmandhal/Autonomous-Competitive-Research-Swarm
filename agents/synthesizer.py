@@ -1,3 +1,5 @@
+import asyncio
+import json
 from agents.researcher import run_research_agent
 from smolagents import CodeAgent, LiteLLMModel
 from rich.console import Console
@@ -5,20 +7,30 @@ from rich.console import Console
 llm = LiteLLMModel(model_id="ollama_chat/qwen3:8b")
 console = Console()
 
-def run_synthesizer_agent(topics: list[str], persona: str):
+async def fetch_research_task(topic: str, persona: str):
+    return await asyncio.to_thread(run_research_agent, topic, persona)
+
+async def run_synthesizer_agent(topics: list[str], persona: str):
     with open("prompts/synthesizer.md", "r") as f:
         manager_prompt = f.read()
 
-    results = []
-    
-    with console.status("[bold green]Booting up Swarm...", spinner="dots") as status:
+    with console.status("[bold green]Booting up Swarm (Async Mode)...", spinner="dots") as status:
+        
+        status.update(f"[bold cyan]Dispatching {len(topics)} research agents concurrently...")
+        
+        tasks = [fetch_research_task(topic, persona) for topic in topics]
+        
+        results = await asyncio.gather(*tasks)
 
-        for topic in topics:
-            result = run_research_agent(topic, persona)
-            results.append(result)
+        stringified_results = []
+        for r in results:
+            if isinstance(r, dict):
+                stringified_results.append(json.dumps(r, indent=2))
+            else:
+                stringified_results.append(str(r))
 
         topics_string = ", ".join(topics)
-        raw_data_context = "\n\n--- NEXT REPORT ---\n\n".join(results)
+        raw_data_context = "\n\n--- NEXT REPORT ---\n\n".join(stringified_results)
         
         task_prompt = f"""
         TARGETS ANALYZED: {topics_string}
@@ -42,6 +54,6 @@ def run_synthesizer_agent(topics: list[str], persona: str):
         )
 
         status.update("[bold magenta]Field work complete. Synthesizing final matrix...")
-        final_result = agent.run(task_prompt)   
+        final_result = await asyncio.to_thread(agent.run, task_prompt)   
         
     return final_result

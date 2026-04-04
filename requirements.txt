@@ -7,3 +7,4 @@ python-dotenv
 argparse
 rich
 litellm
+asyncio
