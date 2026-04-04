@@ -1,8 +1,11 @@
 from tools.text_scraper import scrape_text
 from tools.web_search import web_search
 from smolagents import CodeAgent, LiteLLMModel
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-llm = LiteLLMModel(model_id="ollama_chat/qwen3:8b")
+llm = LiteLLMModel(model_id="gemini/gemini-2.5-flash", api_key=os.getenv("GEMINI_API_KEY"))
 
 
 def run_research_agent(topic: str, persona: str):

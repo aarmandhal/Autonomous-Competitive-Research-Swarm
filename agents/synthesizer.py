@@ -3,8 +3,11 @@ import json
 from agents.researcher import run_research_agent
 from smolagents import CodeAgent, LiteLLMModel
 from rich.console import Console
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-llm = LiteLLMModel(model_id="ollama_chat/qwen3:8b")
+llm = LiteLLMModel(model_id="gemini/gemini-2.5-flash", api_key=os.getenv("GEMINI_API_KEY"))
 console = Console()
 
 async def fetch_research_task(topic: str, persona: str):
